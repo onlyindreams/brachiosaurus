@@ -8,7 +8,7 @@
 	if($argc>1){
 		$debug=false;
 	}
-	echo $debug;
+	echo $debug
     
 	//PostgreSQLパラメータ
 	$dsn = 'pgsql:dbname=rankdb host=localhost port=5432';
