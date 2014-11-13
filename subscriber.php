@@ -18,20 +18,8 @@
     try{
     $dbh = new PDO($dsn, $user, $password);   //DB接続ハンドルを取得
     
-    if ( isset($argv[1])){
-        //引数が設定されていれば、そのメッセージをDBに登録。ASINは設定しない
-        //改行が含まれていたらすべて取り除く
-        $tweetstr=str_replace(array("\r\n","\n","\r"), "", $argv[1]);
-        $sql = "insert into reservation (tweet) " . 
-                              "values('" .  $tweetstr . "')";
-                   			
-        echo $tweetstr . PHP_EOL;
-        $dbh->exec($sql);
-        exit;
-    }
-    
-     //   抽出クエリ
-     $sql = "select node,score,update,asin,rank,title,saved,price,substring(content,1,60) as scontent,url" . 
+    //   抽出クエリ
+    $sql = "select node,score,update,asin,rank,title,saved,price,substring(content,1,60) as scontent,url" . 
      			" from ranktbl where update=now()::date order by update desc,score desc";
      $topscore=0;
      $secondscore=0;
@@ -103,10 +91,19 @@
 
      
      }
-	}catch (PDOException $e){
+     
+     // 1ヶ月前のデータは不要なため削除する
+     $sql = "delete from reservation where registime < now() - '1 month'::nterval;"
+     if (! $debug){
+        $dbh->exec($sql);
+     }else{
+        echo "DEBUG: no delete.\n";
+     }
+
+    }catch (PDOException $e){
     		print('Error:'.$e->getMessage());
     		die();
     }
     $dbh = null;
-
+    
 ?>
