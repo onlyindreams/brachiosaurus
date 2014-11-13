@@ -93,9 +93,10 @@
      }
      
      // 1ヶ月前のデータは不要なため削除する
-     $sql = "delete from reservation where registime < now() - '1 month'::nterval;";
+     $sql = "delete from reservation where registime < now() - '1 month'::interval;";
      if (! $debug){
         $dbh->exec($sql);
+        echo "OK deleted.\n";
      }else{
         echo "DEBUG: no delete.\n";
      }
